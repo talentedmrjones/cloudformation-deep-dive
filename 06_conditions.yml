@@ -1,0 +1,62 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "RDS instance for various environments"
+
+Parameters:
+  Environment:
+    Type: String
+    AllowedValues:
+      - dev
+      - stage
+      - prod
+
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/conditions-section-structure.html
+# https://github.com/awsdocs/aws-cloudformation-user-guide/issues/3
+Conditions:
+  CreateProdResources: !Equals [ !Ref Environment, prod ] # yaml shorthand could be confusing (!=)
+   # !Equals
+   # Fn::Equals:
+Mappings:
+  DbAttributesByEnvironment:
+    dev:
+      AllocatedStorage: 10
+      BackupRetentionPeriod: 5
+      DBInstanceClass: db.m4.large
+      Iops: 1000
+      MultiAZ: false
+      StorageEncrypted: false
+    stage:
+      AllocatedStorage: 100
+      BackupRetentionPeriod: 5
+      DBInstanceClass: db.m4.large
+      Iops: 3000
+      MultiAZ: false
+      StorageEncrypted: true
+    prod:
+      AllocatedStorage: 100
+      BackupRetentionPeriod: 30
+      DBInstanceClass: db.m4.2xlarge
+      Iops: 3000
+      MultiAZ: true
+      StorageEncrypted: true
+
+
+Resources:
+  RdsDbInstance:
+    Type: "AWS::RDS::DBInstance"
+    Properties:
+      AllocatedStorage: !FindInMap [DbAttributesByEnvironment, !Ref Environment, AllocatedStorage] # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-conditions.html
+      AllowMajorVersionUpgrade: false
+      AutoMinorVersionUpgrade: true
+      BackupRetentionPeriod: !FindInMap [DbAttributesByEnvironment, !Ref Environment, BackupRetentionPeriod]
+      DBClusterIdentifier: myDBCluster # reminder: see update requires replacement
+      DBInstanceClass: !FindInMap [DbAttributesByEnvironment, !Ref Environment, DBInstanceClass]
+      Engine: postgres # https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBInstance.html
+      EngineVersion: 9.6.6
+      Iops: !FindInMap [DbAttributesByEnvironment, !Ref Environment, Iops]
+      MultiAZ: !FindInMap [DbAttributesByEnvironment, !Ref Environment, MultiAZ]
+      StorageEncrypted: !FindInMap [DbAttributesByEnvironment, !Ref Environment, StorageEncrypted]
+      StorageType: io1
+      Tags:
+        - Name: Environment
+          Value: !Ref Environment

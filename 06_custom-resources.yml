@@ -1,0 +1,53 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "DynamoDB zip codes and cities"
+
+Resources:
+  DynamoDbTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: zip # declare zip as a string
+          AttributeType: S
+      KeySchema:
+        - AttributeName: zip # declare zip as the partition key (hash)
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+
+  PrepopualateTable: # this key is arbitrary
+    #Type: AWS::CloudFormation::CustomResource # could use generic form
+    Type: Custom::LambdaPrepopulateTable # using semantic form
+    DependsOn: DynamoDbTable
+    Properties:
+      # an Amazon SNS topic ARN or Lambda function ARN
+      ServiceToken: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:prepo-dynamodb
+      TableARN: !GetAtt DynamoDbTable.Arn
+    
+
+      # CloudFormation REQUEST will look something like this:
+      # {
+      #    "RequestType" : "Create",
+      #    "ResponseURL" : "http://pre-signed-S3-url-for-response",
+      #    "StackId" : "arn:aws:cloudformation:us-west-2:EXAMPLE/stack-name/guid",
+      #    "RequestId" : "unique id for this create request",
+      #    "ResourceType" : "Custom::LambdaPrepopulateTable",
+      #    "LogicalResourceId" : "PrepopualateTable",
+      #    "ResourceProperties" : {
+      #       "TableARN" : "{dervied table arn}"
+      #    }
+      # }
+      # Our lamba function's RESPONSE will look something like this:
+      #
+      # {
+      #    "Status" : "SUCCESS",
+      #    "PhysicalResourceId" : "TestResource1",
+      #    "StackId" : "arn:aws:cloudformation:us-west-2:EXAMPLE:stack/stack-name/guid",
+      #    "RequestId" : "unique id for this create request",
+      #    "LogicalResourceId" : "PrepopualateTable",
+      #    "Data" : {
+      #       "OutputName1" : "Value1",
+      #       "OutputName2" : "Value2",
+      #    }
+      # }

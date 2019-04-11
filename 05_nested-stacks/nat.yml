@@ -1,0 +1,72 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "NAT Gateway and Route Table for egress-only public traffic"
+
+Parameters:
+  VpcId:
+    Type: String
+    Description: "Specify the VPC ID."
+
+  SubnetDmzAId:
+    Type: String
+    Description: "Specify the ID for DMZ Subnet A"
+
+  SubnetNodesAId:
+    Type: String
+    Description: "Specify the ID for Nodes subnet A"
+
+  SubnetNodesBId:
+    Type: String
+    Description: "Specify the ID for Nodes subnet B"
+
+Resources:
+
+  # Private subnets will need to reach OUT to the internet while remaining PRIVATE
+  # Network Address Translation solves this, so add a NAT gateway
+  NatGateway:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: !GetAtt ElasticIP.AllocationId
+      SubnetId: !Ref SubnetDmzAId
+
+  # NAT gateway needs a public Elastic IP address
+  ElasticIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+
+
+  # private subnets need a route table
+  privateRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VpcId
+      Tags:
+      - Key: Name
+        Value: Private Routes
+      - Key: Scope
+        Value: private
+
+  privateRouteToInternet:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: privateRouteTable
+      DestinationCidrBlock: 0.0.0.0/0 # all traffic not destined for the VPC range
+      NatGatewayId: !Ref NatGateway   # gets routed through the NAT gateway
+
+  # Route tables need to be associated with subnets
+  privateRouteTableAssociationA:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      RouteTableId: !Ref privateRouteTable
+      SubnetId: !Ref SubnetNodesAId
+
+  privateRouteTableAssociationB:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      RouteTableId: !Ref privateRouteTable
+      SubnetId: !Ref SubnetNodesBId
+
+
+# empty change

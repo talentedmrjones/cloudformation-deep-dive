@@ -1,0 +1,68 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Internet Gateway and Route Table for public traffic"
+
+Parameters:
+  VpcId:
+    Type: String
+    Description: "Specify the VPC ID."
+
+  SubnetDmzAId:
+    Type: String
+    Description: "Specify the ID for DMZ Subnet A"
+
+  SubnetDmzBId:
+    Type: String
+    Description: "Specify the ID for DMZ Subnet B"
+
+Resources:
+
+  # Provide the VPC with access to the internet
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+      - Key: Name
+        Value: !Ref AWS::StackName
+
+  # The Internet gateway alone is not enough, it must be attached to a vpc
+  InternetGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref VpcId
+
+  # Traffic must be explicitly routed through the internet gateway for bidirectional internet communication
+  publicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VpcId
+      Tags:
+      - Key: Name
+        Value: Dmz Routes
+      - Key: Scope
+        Value: public
+
+
+  # Route tables need to be associated with subnets
+  publicRouteTableAssociationA:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      RouteTableId: !Ref publicRouteTable
+      SubnetId: !Ref SubnetDmzAId
+
+  publicRouteTableAssociationB:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      RouteTableId: !Ref publicRouteTable
+      SubnetId: !Ref SubnetDmzBId
+
+  # add a route to the route table
+  publicRouteToInternet:
+    # force Cloudformation to attach the internet gateway before creating the route
+    DependsOn: InternetGatewayAttachment
+    Type: AWS::EC2::Route
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0 # all other traffic not destined for the vpc range will be routed through internet gateway
+      GatewayId: !Ref InternetGateway
+      RouteTableId: !Ref publicRouteTable

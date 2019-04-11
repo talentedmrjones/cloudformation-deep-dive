@@ -1,0 +1,45 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Parameters:
+  Environment:
+    Type: String
+    AllowedValues: ["dev", "stage", "uat", "prod"]
+
+Mappings:
+
+  AmazonLinux:
+    us-east-2:
+      ebs: "ami-f63b1193"
+      ephemeral: "ami-ca3b11af"
+    us-west-2:
+      ebs: "ami-f2d3638a"
+      ephemeral: "ami-74d8680c"
+
+  UbuntuXenial:
+    us-east-2:
+      ebs: "ami-6a003c0f"
+      ephemeral: "ami-2cfcc049"
+    us-west-2:
+      ebs: "ami-db710fa3"
+      ephemeral: "ami-3b6a1443"
+
+  InstanceTypeByEnvironment:
+    type:
+      dev: "t2.small"
+      stage: "t2.large"
+      uat: "c4.large"
+      prod: "c4.large"
+
+
+Resources:
+  EC2InstanceRunningAmazonLinux:
+    Type: "AWS::EC2::Instance"
+    Properties:
+      ImageId: !FindInMap [AmazonLinux, !Ref "AWS::Region", "ebs"]
+      InstanceType: !FindInMap [InstanceTypeByEnvironment, "type", !Ref Environment]
+
+  EC2InstanceRunningUbuntuXenial:
+    Type: "AWS::EC2::Instance"
+    Properties:
+      ImageId: !FindInMap [UbuntuXenial, !Ref "AWS::Region", "ephemeral"]
+      InstanceType: !FindInMap [InstanceTypeByEnvironment, "type", !Ref Environment]

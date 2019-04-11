@@ -1,0 +1,40 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Full environment."
+
+Parameters:
+  VpcSubnetCidrs:
+    Type: String
+    Default: "10.0.0.0/16"
+
+Resources:
+  # Create the VPC and subnets
+  Network:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://cerulean-operations.s3.amazonaws.com/vpc-subnets.yml
+      Parameters:
+        VpcSubnetCidrs: !Ref VpcSubnetCidrs
+
+
+  # Create the internet access
+  InternetAccess:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://cerulean-operations.s3.amazonaws.com/internet-access.yml
+      Parameters:
+        VpcId: !GetAtt Network.Outputs.VpcId
+        SubnetDmzAId: !GetAtt Network.Outputs.SubnetDmzAId
+        SubnetDmzBId: !GetAtt Network.Outputs.SubnetDmzBId
+
+  # Create NAT gateway for network address translation
+  NAT:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: InternetAccess
+    Properties:
+      TemplateURL: https://cerulean-operations.s3.amazonaws.com/nat.yml
+      Parameters:
+        VpcId: !GetAtt Network.Outputs.VpcId
+        SubnetDmzAId: !GetAtt Network.Outputs.SubnetDmzAId
+        SubnetNodesAId: !GetAtt Network.Outputs.SubnetNodesAId
+        SubnetNodesBId: !GetAtt Network.Outputs.SubnetNodesBId

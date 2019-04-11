@@ -1,0 +1,33 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Describes this template"
+
+Parameters:
+  # parameters allow us to specify values at run time
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - stage
+      - uat
+      - prod
+
+Resources:
+  # list of AWS resources we want created or updated
+  MyVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+
+
+Mappings:
+  # collection of nested key/value pairs
+  # allows us to MAP one value to another value
+
+Conditions:
+  # statements that determine when a resource is created or when a property is defined
+  # eg dev vs prod
+
+Outputs:
+  # declares values to be made readily available after creation/update
+  # eg. explicitly show DNS endpoint of ELB or RDS instance

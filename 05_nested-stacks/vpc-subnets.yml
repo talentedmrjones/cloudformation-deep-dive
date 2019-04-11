@@ -1,0 +1,109 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "VPC with 2 public and 2 private subnets"
+
+Parameters:
+  VpcSubnetCidrs:
+    Type: String
+    Description: "CIDR blocks for VPC and subnets. Specify VPC first."
+
+Resources:
+  Vpc:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcSubnetCidrs
+      EnableDnsSupport: True
+      EnableDnsHostnames: True
+      Tags:
+      - Key: Name
+        Value: !Ref AWS::StackName
+
+  # create three subnets to hold Elastic Load Balancer(s).
+  subnetDmzA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [1, !GetAZs ""]
+      CidrBlock: !Select [0, !Cidr [!GetAtt Vpc.CidrBlock, 4, 8]]
+      MapPublicIpOnLaunch: true
+      Tags:
+      - Key: Name
+        Value: DMZ A
+      - Key: Scope
+        Value: public
+      - Key: Purpose
+        Value: load balancing
+      VpcId: !Ref Vpc
+
+  subnetDmzB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [2, !GetAZs ""]
+      CidrBlock: !Select [1, !Cidr [!GetAtt Vpc.CidrBlock, 4, 8]]
+      MapPublicIpOnLaunch: true
+      Tags:
+      - Key: Name
+        Value: DMZ B
+      - Key: Scope
+        Value: public
+      - Key: Purpose
+        Value: load balancing
+      VpcId: !Ref Vpc
+
+
+  # create two subnets to hold ec2 instances.
+  subnetNodesA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [1, !GetAZs ""]
+      CidrBlock: !Select [2, !Cidr [!GetAtt Vpc.CidrBlock, 4, 8]]
+      MapPublicIpOnLaunch: false
+      Tags:
+      - Key: Name
+        Value: Cluster Nodes A
+      - Key: Scope
+        Value: private
+      - Key: Purpose
+        Value: nodes
+      VpcId: !Ref Vpc
+
+  subnetNodesB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [2, !GetAZs ""]
+      CidrBlock: !Select [3, !Cidr [!GetAtt Vpc.CidrBlock, 4, 8]]
+      MapPublicIpOnLaunch: false
+      Tags:
+      - Key: Name
+        Value: Cluster Nodes B
+      - Key: Scope
+        Value: private
+      - Key: Purpose
+        Value: nodes
+      VpcId: !Ref Vpc
+
+
+
+Outputs:
+  VpcId:  # this key will be the NAME of the output
+      Description : "VPC ID"
+      Value:  !Ref Vpc # derive the value by REFerencing the resource where logical ID=Vpc
+
+  VpcCidr:
+      Description : "VPC ID"
+      Value:  !GetAtt Vpc.CidrBlock     # export the IP range of the Vpc
+
+  SubnetDmzAId:
+      Description : "DMZ A Subnet ID"
+      Value:  !Ref subnetDmzA
+
+  SubnetDmzBId:
+      Description : "DMZ B Subnet ID"
+      Value:  !Ref subnetDmzB
+
+  SubnetNodesAId:
+      Description : "Microservices Nodes Subnet A ID"
+      Value:  !Ref subnetNodesA
+
+  SubnetNodesBId:
+      Description : "Microservices Nodes Subnet B ID"
+      Value:  !Ref subnetNodesB

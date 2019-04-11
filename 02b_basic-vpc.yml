@@ -1,0 +1,97 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "VPC with 2 public subnets"
+
+Parameters:
+  VpcCidr:
+    Type: String
+    Description: "Enter a CIDR block for the VPC"
+    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
+
+
+  SubnetCidrs:
+    Type: CommaDelimitedList
+    Description: "A list of CIDR blocks for subnets"
+    # 10.0.0.0/24,10.0.1.0/24
+
+Resources:
+  Vpc: #logical id
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcCidr
+
+  subnetA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [ 1, !GetAZs "" ]
+      CidrBlock: !Select [0, !Ref SubnetCidrs]
+      MapPublicIpOnLaunch: true
+      VpcId:
+        Ref: Vpc #long form reference
+      Tags:
+        - Key: Name
+          Value: DMZ-A
+        - Key: Scope
+          Value: public
+
+  subnetC:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [ 2, !GetAZs "" ]
+      CidrBlock: !Select [1, !Ref SubnetCidrs]
+      MapPublicIpOnLaunch: true
+      VpcId: !Ref Vpc # short form reference
+      Tags:
+        - Key: Name
+          Value: DMZ-B
+        - Key: Scope
+          Value: public
+
+  # Provide the VPC with access to the internet
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Ref AWS::StackName #pseudo-parameter
+
+  # The Internet gateway alone is not enough, it must be attached to a vpc
+  InternetGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref Vpc
+
+  # Traffic must be explicitly routed through the internet gateway for bidirectional internet communication
+  publicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref Vpc
+      Tags:
+      - Key: Name
+        Value: Dmz Routes
+      - Key: Scope
+        Value: public
+
+  # add a route to the route table
+  publicRouteToInternet:
+    # force Cloudformation to attach the internet gateway before creating the route
+    DependsOn: InternetGatewayAttachment
+    Type: AWS::EC2::Route
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0 # all other traffic not destined for the vpc range will be routed through internet gateway
+      GatewayId: !Ref InternetGateway
+      RouteTableId: !Ref publicRouteTable
+
+  # Route tables need to be associated with subnets
+  publicRouteTableAssociationA:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref publicRouteTable
+      SubnetId: !Ref subnetA
+
+  publicRouteTableAssociationB:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref publicRouteTable
+      SubnetId: !Ref subnetC

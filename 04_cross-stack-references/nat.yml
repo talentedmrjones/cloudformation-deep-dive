@@ -1,0 +1,65 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "NAT Gateway and Route Table for egress-only public traffic"
+
+Parameters:
+  NetworkStack:
+    Type: "String"
+    Description: "Network stack to apply to."
+
+Resources:
+
+  # Private subnets will need to reach OUT to the internet while remaining PRIVATE
+  # Network Address Translation solves this, so add a NAT gateway
+  NatGateway:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: !GetAtt ElasticIP.AllocationId
+      SubnetId:
+        Fn::ImportValue:
+          !Sub ${NetworkStack}-SubnetDmzAId
+
+  # NAT gateway needs a public Elastic IP address
+  ElasticIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+
+
+  # private subnets need a route table
+  privateRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Fn::ImportValue:
+          !Sub ${NetworkStack}-VpcId
+      Tags:
+      - Key: Name
+        Value: Private Routes
+      - Key: Scope
+        Value: private
+
+  privateRouteToInternet:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: privateRouteTable
+      DestinationCidrBlock: 0.0.0.0/0 # all traffic not destined for the VPC range
+      NatGatewayId: !Ref NatGateway   # gets routed through the NAT gateway
+
+  # Route tables need to be associated with subnets
+  privateRouteTableAssociationA:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      RouteTableId: !Ref privateRouteTable
+      SubnetId:
+        Fn::ImportValue:
+          !Sub ${NetworkStack}-SubnetNodesAId
+
+  privateRouteTableAssociationB:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      RouteTableId: !Ref privateRouteTable
+      SubnetId:
+        Fn::ImportValue:
+          !Sub ${NetworkStack}-SubnetNodesBId

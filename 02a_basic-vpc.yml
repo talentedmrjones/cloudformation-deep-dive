@@ -1,0 +1,39 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "/16 VPC with 1 /20 subnet"
+
+Resources:
+  Vpc: # logical ID
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      Tags:
+        - Key: Name
+          Value: basic-vpc
+
+  subnetA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: us-west-1c
+      CidrBlock: 10.0.0.0/20
+      MapPublicIpOnLaunch: true
+      VpcId:
+        Ref: Vpc #long form reference
+      Tags:
+        - Key: Name
+          Value: DMZ-A
+        - Key: Scope
+          Value: public
+
+  subnetB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: 
+      CidrBlock: 10.0.16.0/20
+      MapPublicIpOnLaunch: true
+      VpcId: !Ref Vpc # short form reference
+      Tags:
+        - Key: Name
+          Value: DMZ-B
+        - Key: Scope
+          Value: public
