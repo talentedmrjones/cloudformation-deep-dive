@@ -19,7 +19,6 @@ Resources:
     Type: AWS::EC2::VPC
     Properties:
 
-
 Mappings:
   # collection of nested key/value pairs
   # allows us to MAP one value to another value
