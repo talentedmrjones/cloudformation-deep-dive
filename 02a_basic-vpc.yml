@@ -21,14 +21,14 @@ Resources:
         Ref: Vpc #long form reference
       Tags:
         - Key: Name
-          Value: DMZ-A
+          Value: DMZ-C
         - Key: Scope
           Value: public
 
   subnetB:
     Type: AWS::EC2::Subnet
     Properties:
-      AvailabilityZone: 
+      AvailabilityZone: us-west-1b
       CidrBlock: 10.0.16.0/20
       MapPublicIpOnLaunch: true
       VpcId: !Ref Vpc # short form reference

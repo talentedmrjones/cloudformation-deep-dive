@@ -6,13 +6,16 @@ Parameters:
   VpcSubnetCidrs:
     Type: String
     Default: "10.0.0.0/16"
+  Bucket:
+    Type: String
+    Default: "cerulean-operations"
 
 Resources:
   # Create the VPC and subnets
   Network:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://cerulean-operations.s3.amazonaws.com/vpc-subnets.yml
+      TemplateURL: !Sub https://${Bucket}.s3.amazonaws.com/vpc-subnets.yml
       Parameters:
         VpcSubnetCidrs: !Ref VpcSubnetCidrs
 

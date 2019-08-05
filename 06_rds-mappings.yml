@@ -26,6 +26,12 @@ Mappings:
       DBInstanceClass: db.m4.large
       Iops: 1000
       MultiAZ: False
+    stage:
+      AllocatedStorage: 100
+      BackupRetentionPeriod: 5
+      DBInstanceClass: db.m4.2xlarge
+      Iops: 3000
+      MultiAZ: False
     prod:
       AllocatedStorage: 100
       BackupRetentionPeriod: 35
