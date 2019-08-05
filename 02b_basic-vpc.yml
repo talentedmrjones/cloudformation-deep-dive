@@ -8,7 +8,6 @@ Parameters:
     Description: "Enter a CIDR block for the VPC"
     AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
 
-
   SubnetCidrs:
     Type: CommaDelimitedList
     Description: "A list of CIDR blocks for subnets"
@@ -23,7 +22,7 @@ Resources:
   subnetA:
     Type: AWS::EC2::Subnet
     Properties:
-      AvailabilityZone: !Select [ 1, !GetAZs "" ]
+      AvailabilityZone: !Select [ 0, !GetAZs "" ]
       CidrBlock: !Select [0, !Ref SubnetCidrs]
       MapPublicIpOnLaunch: true
       VpcId:
@@ -37,7 +36,7 @@ Resources:
   subnetC:
     Type: AWS::EC2::Subnet
     Properties:
-      AvailabilityZone: !Select [ 2, !GetAZs "" ]
+      AvailabilityZone: !Select [ 1, !GetAZs "" ]
       CidrBlock: !Select [1, !Ref SubnetCidrs]
       MapPublicIpOnLaunch: true
       VpcId: !Ref Vpc # short form reference

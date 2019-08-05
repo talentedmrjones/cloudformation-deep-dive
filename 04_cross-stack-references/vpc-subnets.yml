@@ -22,7 +22,7 @@ Resources:
   subnetDmzA:
     Type: AWS::EC2::Subnet
     Properties:
-      AvailabilityZone: !Select [1, !GetAZs ""]
+      AvailabilityZone: !Select [0, !GetAZs ""]
       CidrBlock: !Select [0, !Cidr [!GetAtt Vpc.CidrBlock, 4, 8]]
       MapPublicIpOnLaunch: true
       Tags:
@@ -38,7 +38,7 @@ Resources:
   subnetDmzB:
     Type: AWS::EC2::Subnet
     Properties:
-      AvailabilityZone: !Select [2, !GetAZs ""]
+      AvailabilityZone: !Select [1, !GetAZs ""]
       CidrBlock: !Select [1, !Cidr [!GetAtt Vpc.CidrBlock, 4, 8]]
       MapPublicIpOnLaunch: true
       Tags:
@@ -56,7 +56,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       AvailabilityZone: !Select [0, !GetAZs ""]
-      CidrBlock: !Select [3, !Cidr [!GetAtt Vpc.CidrBlock, 4, 8]]
+      CidrBlock: !Select [2, !Cidr [!GetAtt Vpc.CidrBlock, 4, 8]]
       MapPublicIpOnLaunch: false
       Tags:
       - Key: Name
@@ -71,7 +71,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       AvailabilityZone: !Select [1, !GetAZs ""]
-      CidrBlock: !Select [2, !Cidr [!GetAtt Vpc.CidrBlock, 4, 8]]
+      CidrBlock: !Select [3, !Cidr [!GetAtt Vpc.CidrBlock, 4, 8]]
       MapPublicIpOnLaunch: false
       Tags:
       - Key: Name
