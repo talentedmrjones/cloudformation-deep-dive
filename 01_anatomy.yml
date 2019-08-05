@@ -15,9 +15,10 @@ Parameters:
 
 Resources:
   # list of AWS resources we want created or updated
-  MyVPC:
+  MyVPC: # logical ID
     Type: AWS::EC2::VPC
     Properties:
+      CidrBlock: 10.0.0.0/16
 
 Mappings:
   # collection of nested key/value pairs
