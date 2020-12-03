@@ -14,7 +14,7 @@ Parameters:
 
 Conditions:
   CreateProdResources: !Equals [ !Ref Environment, prod ] # yaml shorthand could be confusing (!=)
-  MyAndCondition: !And
+  CreateProdResourcesUsEast1: !And
     - !Equals [!Ref AWS::Region, "us-east-1"]
     - !Condition CreateProdResources
    # !Equals
