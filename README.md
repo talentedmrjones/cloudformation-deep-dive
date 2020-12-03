@@ -2,7 +2,6 @@
 Instructor [Richard Jones](https://www.linkedin.com/in/richard-jones-aws/)
 
 More training
-
 - [Amazon Web Services Fundamentals](https://www.safaribooksonline.com/library/view/amazon-web-services/9780134702186/)
 - [Automation in AWS with CloudFormation, CLI, and SDKs](https://www.safaribooksonline.com/library/view/automation-in-aws/9780134818313/)
 - [Networking in AWS](https://www.safaribooksonline.com/library/view/networking-in-amazon/9780134850849/)
@@ -77,3 +76,10 @@ This class **does not** cover
 ### Intrinsic Functions
 
 - explore intrinsic functions
+
+## Links
+- [CloudFormation Docs](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html)
+- [Template Anatomy](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html)
+- [Resource and Property Types](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html)
+- [Intrinsic Functions](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference.html)
+- [Cross-stack References](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html)

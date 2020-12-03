@@ -1,4 +1,4 @@
----
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html
 AWSTemplateFormatVersion: "2010-09-09"
 Description: "Describes this template"
 

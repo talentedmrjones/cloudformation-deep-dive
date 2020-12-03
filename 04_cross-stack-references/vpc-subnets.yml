@@ -1,4 +1,4 @@
----
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html
 AWSTemplateFormatVersion: "2010-09-09"
 Description: "Single VPC with 2 public and 2 private subnets"
 
