@@ -1,4 +1,4 @@
-# AWS CloudFormation Deep Dive
+# AWS CloudFormation
 Instructor [Richard Jones](https://www.linkedin.com/in/richard-jones-aws/)
 
 More training
