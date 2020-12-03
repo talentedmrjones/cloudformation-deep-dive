@@ -15,12 +15,11 @@ This class is intended for those who have _AWS experience_ or have _previously a
 
 This class assumes you have a working knowledge of
 - AWS global infrastructure
-- AWS core services
-- Scripting or programming
+- AWS core services (VPC, EC2, S3, RDS)
+- Scripting or programming (YAML, JSON, Python, etc)
 
 
 This class covers
-
 - Deep technical details of AWS CloudFormation
 - How to write and deploy templates
 - How CloudFormation fits into CI/CD
