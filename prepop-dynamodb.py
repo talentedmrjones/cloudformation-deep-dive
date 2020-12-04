@@ -1,11 +1,11 @@
 import boto3
-import urllib2
+import urllib.request
 import json
 
-class RequestWithMethod(urllib2.Request):
+class RequestWithMethod(urllib.request.Request):
     def __init__(self, *args, **kwargs):
         self._method = kwargs.pop('method', None)
-        urllib2.Request.__init__(self, *args, **kwargs)
+        urllib.request.Request.__init__(self, *args, **kwargs)
 
     def get_method(self):
         return self._method if self._method else super(RequestWithMethod, self).get_method()
@@ -49,7 +49,7 @@ def lambda_handler(event, context):
        "RequestId" : event['RequestId'],
        "LogicalResourceId" : event['LogicalResourceId']
     }
-    opener = urllib2.build_opener(urllib2.HTTPHandler)
+    opener = urllib.request.build_opener(urllib.request.HTTPHandler)
 
     request = RequestWithMethod(event['ResponseURL'], method='PUT', data=json.dumps(customResponse))
     opener.open(request)
