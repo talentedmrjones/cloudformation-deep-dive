@@ -1,6 +1,5 @@
----
 AWSTemplateFormatVersion: "2010-09-09"
-Description: "Full environment."
+Description: "Full networking environment."
 
 Parameters:
   VpcSubnetCidrs:
@@ -15,7 +14,7 @@ Resources:
   Network:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: !Sub https://${Bucket}.s3.amazonaws.com/vpc-subnets.yml
+      TemplateURL: !Sub https://${Bucket}.s3.amazonaws.com/cloudformation/networking/vpc-subnets.yml
       Parameters:
         VpcSubnetCidrs: !Ref VpcSubnetCidrs
 
@@ -24,7 +23,7 @@ Resources:
   InternetAccess:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: !Sub https://${Bucket}.s3.amazonaws.com/internet-access.yml
+      TemplateURL: !Sub https://${Bucket}.s3.amazonaws.com/cloudformation/networking/internet-access.yml
       Parameters:
         VpcId: !GetAtt Network.Outputs.VpcId
         SubnetDmzAId: !GetAtt Network.Outputs.SubnetDmzAId
@@ -35,7 +34,7 @@ Resources:
   #   Type: AWS::CloudFormation::Stack
   #   DependsOn: InternetAccess
   #   Properties:
-  #     TemplateURL: !Sub https://${Bucket}.s3.amazonaws.com/nat.yml
+  #     TemplateURL: !Sub https://${Bucket}.s3.amazonaws.com/cloudformation/networking/nat.yml
   #     Parameters:
   #       VpcId: !GetAtt Network.Outputs.VpcId
   #       SubnetDmzAId: !GetAtt Network.Outputs.SubnetDmzAId

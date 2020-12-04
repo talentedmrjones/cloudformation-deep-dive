@@ -1,4 +1,3 @@
----
 AWSTemplateFormatVersion: "2010-09-09"
 Description: "RDS instance for various environments"
 
@@ -24,13 +23,14 @@ Conditions:
 Resources:
   RdsDbInstance:
     Type: "AWS::RDS::DBInstance"
+    DeletionPolicy: !If [CreateProdResources, "Snapshot", AWS::NoValue]
     Properties:
       AllocatedStorage: !If [CreateProdResources, 100, 10] # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-conditions.html
       AllowMajorVersionUpgrade: false
       AutoMinorVersionUpgrade: true
       BackupRetentionPeriod: !If [CreateProdResources, 35, 5]
       DBClusterIdentifier: myDBCluster # reminder: see update requires replacement
-      DBInstanceClass: !If [CreateProdResources, "db.m4.2xlarge", "db.m4.large"]
+      DBInstanceClass: !If [CreateProdResources, "db.m5.2xlarge", "db.m5.large"]
       Engine: postgres # https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBInstance.html
       EngineVersion: 9.6.6
       Iops: !If [CreateProdResources, 3000, 1000]

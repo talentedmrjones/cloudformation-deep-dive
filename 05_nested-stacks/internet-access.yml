@@ -1,4 +1,3 @@
----
 AWSTemplateFormatVersion: "2010-09-09"
 Description: "Internet Gateway and Route Table for public traffic"
 
@@ -30,7 +29,7 @@ Resources:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
       InternetGatewayId: !Ref InternetGateway
-      VpcId: !Ref VpcId
+      VpcId: !Sub ${NetworkStack}-VpcId
 
   # Traffic must be explicitly routed through the internet gateway for bidirectional internet communication
   publicRouteTable:

@@ -52,7 +52,7 @@ Resources:
       Engine: postgres # https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBInstance.html
       EngineVersion: 9.6.6
       Iops: !FindInMap [AttributesByEnvironment, !Ref Environment, "Iops"]
-      MultiAZ: !FindInMap [AttributesByEnvironment, !Ref Environment, "MultiAZ"]
+      MultiAZ: !Condition CreateProdResources
       StorageEncrypted: !Condition CreateProdResources
       StorageType: io1
       Tags:

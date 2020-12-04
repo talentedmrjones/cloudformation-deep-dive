@@ -23,7 +23,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       AvailabilityZone: !Select [0, !GetAZs ""]
-      CidrBlock: !Select [0, !Cidr [!GetAtt Vpc.CidrBlock, 4, 8]]
+      CidrBlock: !Select [0, !Cidr [!GetAtt Vpc.CidrBlock, 4, 8]] # 32 -8 = /24
       MapPublicIpOnLaunch: true
       Tags:
       - Key: Name

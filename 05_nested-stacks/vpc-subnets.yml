@@ -1,4 +1,3 @@
----
 AWSTemplateFormatVersion: "2010-09-09"
 Description: "VPC with 2 public and 2 private subnets"
 
@@ -54,7 +53,7 @@ Resources:
   subnetNodesA:
     Type: AWS::EC2::Subnet
     Properties:
-      AvailabilityZone: !Select [2, !GetAZs ""]
+      AvailabilityZone: !Select [0, !GetAZs ""]
       CidrBlock: !Select [2, !Cidr [!GetAtt Vpc.CidrBlock, 4, 8]]
       MapPublicIpOnLaunch: false
       Tags:
@@ -69,7 +68,7 @@ Resources:
   subnetNodesB:
     Type: AWS::EC2::Subnet
     Properties:
-      AvailabilityZone: !Select [3, !GetAZs ""]
+      AvailabilityZone: !Select [1, !GetAZs ""]
       CidrBlock: !Select [3, !Cidr [!GetAtt Vpc.CidrBlock, 4, 8]]
       MapPublicIpOnLaunch: false
       Tags:
@@ -81,13 +80,26 @@ Resources:
         Value: nodes
       VpcId: !Ref Vpc
 
-
+  subnetNodesC:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [1, !GetAZs ""]
+      CidrBlock: !Select [4, !Cidr [!GetAtt Vpc.CidrBlock, 5, 8]]
+      MapPublicIpOnLaunch: false
+      Tags:
+      - Key: Name
+        Value: Cluster Nodes B
+      - Key: Scope
+        Value: private
+      - Key: Purpose
+        Value: nodes
+      VpcId: !Ref Vpc
 
 Outputs:
   VpcId:  # this key will be the NAME of the output
       Description : "VPC ID"
       Value:  !Ref Vpc # derive the value by REFerencing the resource where logical ID=Vpc
-
+      
   VpcCidr:
       Description : "VPC ID"
       Value:  !GetAtt Vpc.CidrBlock     # export the IP range of the Vpc
