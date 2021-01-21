@@ -29,7 +29,7 @@ Resources:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
       InternetGatewayId: !Ref InternetGateway
-      VpcId: !Sub VpcId
+      VpcId: !Ref VpcId
 
   # Traffic must be explicitly routed through the internet gateway for bidirectional internet communication
   publicRouteTable:
