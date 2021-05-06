@@ -2,12 +2,10 @@
 Instructor [Richard Jones](https://www.linkedin.com/in/richard-jones-aws/)
 
 More training
-- [Amazon Web Services Fundamentals](https://www.safaribooksonline.com/library/view/amazon-web-services/9780134702186/)
-- [Automation in AWS with CloudFormation, CLI, and SDKs](https://www.safaribooksonline.com/library/view/automation-in-aws/9780134818313/)
-- [Networking in AWS](https://www.safaribooksonline.com/library/view/networking-in-amazon/9780134850849/)
-- [AWS Certified Cloud Practitioner Complete Video Course](https://www.safaribooksonline.com/library/view/aws-certified-cloud/9780135175507/)
-- [More live classes by Richard](https://www.safaribooksonline.com/search/?query=author%3A%22Richard%20A.%20Jones%22&extended_publisher_data=true&highlight=true&is_academic_institution_account=false&source=user&include_assessments=false&include_case_studies=true&include_courses=true&include_orioles=true&include_playlists=true&formats=live%20online%20training&sort=relevance)
-- [Also check out training from my friend and colleague Chad Smith](https://www.safaribooksonline.com/search/?query=author%3A%22Chad%20Smith%22&extended_publisher_data=true&highlight=true&is_academic_institution_account=false&source=user&include_assessments=false&include_case_studies=true&include_courses=true&include_orioles=true&include_playlists=true&sort=relevance)
+- [Amazon Web Services Fundamentals 2nd Edition](https://learning.oreilly.com/videos/amazon-web-services/9780135581247/)
+- [AWS Certified Cloud Practitioner Complete Video Course](https://learning.oreilly.com/videos/aws-certified-cloud/9780135175507/)
+- [More Videos by Richard](https://learning.oreilly.com/search/?query=richard%20jones&extended_publisher_data=true&highlight=true&include_assessments=false&include_case_studies=true&include_courses=true&include_playlists=true&include_collections=true&include_notebooks=true&include_sandboxes=true&include_scenarios=true&is_academic_institution_account=false&source=user&formats=video&sort=relevance&facet_json=true&json_facets=true&page=0&include_facets=false&include_practice_exams=true)
+- [Also check out training from Chad Smith](https://learning.oreilly.com/search/?query=chad%20smith&extended_publisher_data=true&highlight=true&include_assessments=false&include_case_studies=true&include_courses=true&include_playlists=true&include_collections=true&include_notebooks=true&include_sandboxes=true&include_scenarios=true&is_academic_institution_account=false&source=user&sort=relevance&facet_json=true&json_facets=true&page=0&include_facets=false&include_practice_exams=true)
 
 ## A Note About This Class
 This class is intended for those who have _AWS experience_ or have _previously attended other training_.
