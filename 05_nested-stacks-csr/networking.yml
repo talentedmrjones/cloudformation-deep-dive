@@ -1,0 +1,28 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Full networking environment."
+
+Parameters:
+  VpcSubnetCidrs:
+    Type: String
+    Default: "10.0.0.0/16"
+  Bucket:
+    Type: String
+    Default: "cerulean-operations"
+
+Resources:
+  # Create the VPC and subnets
+  VpcSubnets:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub https://${Bucket}.s3.amazonaws.com/cloudformation/05_nested-stacks-csr/vpc-subnets.yml
+      Parameters:
+        VpcSubnetCidrs: !Ref VpcSubnetCidrs
+
+
+  # Create the internet access
+  InternetAccess:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub https://${Bucket}.s3.amazonaws.com/cloudformation/05_nested-stacks-csr/internet-access.yml
+      Parameters:
+        NetworkStack: !Select [1, !Split ["/", !Ref VpcSubnets]]

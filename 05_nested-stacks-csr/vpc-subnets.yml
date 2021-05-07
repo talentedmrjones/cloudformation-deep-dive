@@ -1,0 +1,122 @@
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/walkthrough-crossstackref.html
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Single VPC with 2 public and 2 private subnets"
+
+Parameters:
+  VpcSubnetCidrs:
+    Type: String
+    Description: "CIDR block for VPC."
+    # 10.100.0.0/16
+
+Resources:
+  Vpc:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcSubnetCidrs
+      EnableDnsSupport: True
+      EnableDnsHostnames: True
+      Tags:
+      - Key: Name
+        Value: !Ref AWS::StackName #pseudo-parameter
+
+  # create two subnets to hold Elastic Load Balancer(s).
+  subnetDmzA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [0, !GetAZs ""]
+      CidrBlock: !Select [0, !Cidr [!GetAtt Vpc.CidrBlock, 4, 8]] # 32-8 = /24
+      MapPublicIpOnLaunch: true
+      VpcId: !Ref Vpc
+      Tags:
+      - Key: Name
+        Value: DMZ A
+      - Key: Scope
+        Value: public
+      - Key: Purpose
+        Value: load balancing
+
+
+  subnetDmzB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [1, !GetAZs ""]
+      CidrBlock: !Select [1, !Cidr [!GetAtt Vpc.CidrBlock, 4, 8]]
+      MapPublicIpOnLaunch: true
+      VpcId: !Ref Vpc
+      Tags:
+      - Key: Name
+        Value: DMZ B
+      - Key: Scope
+        Value: public
+      - Key: Purpose
+        Value: load balancing
+
+
+  # create two subnets to hold ec2 instances.
+  subnetNodesA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [0, !GetAZs ""]
+      CidrBlock: !Select [2, !Cidr [!GetAtt Vpc.CidrBlock, 4, 8]]
+      MapPublicIpOnLaunch: false
+      Tags:
+      - Key: Name
+        Value: Cluster Nodes A
+      - Key: Scope
+        Value: private
+      - Key: Purpose
+        Value: nodes
+      VpcId: !Ref Vpc
+
+  subnetNodesB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: !Select [1, !GetAZs ""]
+      CidrBlock: !Select [3, !Cidr [!GetAtt Vpc.CidrBlock, 4, 8]]
+      MapPublicIpOnLaunch: false
+      Tags:
+      - Key: Name
+        Value: Cluster Nodes B
+      - Key: Scope
+        Value: private
+      - Key: Purpose
+        Value: nodes
+      VpcId: !Ref Vpc
+
+Outputs:
+
+  VpcId:  # this key will be the NAME of the output
+    Description : "VPC ID"
+    Value:  !Ref Vpc # derive the value by REFerencing the resource where logical ID=Vpc
+    Export:                               # export the ID of the Vpc so other stacks can import it
+      Name: !Sub ${AWS::StackName}-VpcId # Use the SUBstitute intrinsic funtion to dervie a name for the export that is based on the name of the stack
+
+  VpcCidr:
+    Description : "VPC CIDR block"
+    Value:  !GetAtt Vpc.CidrBlock     # export the IP range of the Vpc
+    Export:
+      Name: !Sub ${AWS::StackName}-VpcCidr
+
+  SubnetDmzAId:
+    Description : "DMZ A Subnet ID"
+    Value:  !Ref subnetDmzA
+    Export:
+      Name: !Sub ${AWS::StackName}-SubnetDmzAId
+
+  SubnetDmzBId:
+    Description : "DMZ B Subnet ID"
+    Value:  !Ref subnetDmzB
+    Export:
+      Name: !Sub ${AWS::StackName}-SubnetDmzBId
+
+  SubnetNodesAId:
+    Description : "Microservices Nodes Subnet A ID"
+    Value:  !Ref subnetNodesA
+    Export:
+      Name: !Sub ${AWS::StackName}-SubnetNodesAId
+
+  SubnetNodesBId:
+    Description : "Microservices Nodes Subnet B ID"
+    Value:  !Ref subnetNodesB
+    Export:
+      Name: !Sub ${AWS::StackName}-SubnetNodesBId
