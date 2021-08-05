@@ -1,18 +1,21 @@
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html
 AWSTemplateFormatVersion: "2010-09-09"
+#Optional
 Description: "Describes this template"
 
+# Optional
 Parameters:
   # parameters allow us to specify values at run time
-  Environment:
+  Environment: # arbitrary
     Type: String
-    Default: dev
+    Default: dev #Optional
     AllowedValues:
       - dev
       - stage
       - uat
       - prod
 
+# Required
 Resources:
   # list of AWS resources we want created or updated
   MyVPC: # logical ID
@@ -31,3 +34,4 @@ Conditions:
 Outputs:
   # declares values to be made readily available after creation/update
   # eg. explicitly show DNS endpoint of ELB or RDS instance
+  MyVpcId: Ref: MyVPC
