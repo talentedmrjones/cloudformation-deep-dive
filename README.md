@@ -36,13 +36,13 @@ This class **does not** cover
 - Syntax
 - CloudFormations place in CI/CD
 
-### Creating Resources
+### Creating Stacks
 
 - Using aws cli
 - using Management console
 
 
-### Updating Resources
+### Updating Stacks
 
 - Change sets
 - deploy command

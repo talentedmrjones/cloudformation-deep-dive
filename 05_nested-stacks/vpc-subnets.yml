@@ -83,7 +83,7 @@ Resources:
   subnetNodesC:
     Type: AWS::EC2::Subnet
     Properties:
-      AvailabilityZone: !Select [1, !GetAZs ""]
+      AvailabilityZone: !Select [2, !GetAZs ""]
       CidrBlock: !Select [4, !Cidr [!GetAtt Vpc.CidrBlock, 5, 8]]
       MapPublicIpOnLaunch: false
       Tags:

@@ -6,6 +6,7 @@ Parameters:
   VpcSubnetCidrs:
     Type: String
     Description: "CIDR block for VPC."
+    # 10.100.0.0/16
 
 Resources:
   Vpc:
@@ -16,15 +17,16 @@ Resources:
       EnableDnsHostnames: True
       Tags:
       - Key: Name
-        Value: !Ref AWS::StackName
+        Value: !Ref AWS::StackName #pseudo-parameter
 
   # create two subnets to hold Elastic Load Balancer(s).
   subnetDmzA:
     Type: AWS::EC2::Subnet
     Properties:
       AvailabilityZone: !Select [0, !GetAZs ""]
-      CidrBlock: !Select [0, !Cidr [!GetAtt Vpc.CidrBlock, 4, 8]] # 32 -8 = /24
+      CidrBlock: !Select [0, !Cidr [!GetAtt Vpc.CidrBlock, 4, 8]] # 32-8 = /24
       MapPublicIpOnLaunch: true
+      VpcId: !Ref Vpc
       Tags:
       - Key: Name
         Value: DMZ A
@@ -33,7 +35,6 @@ Resources:
       - Key: Purpose
         Value: load balancing
 
-      VpcId: !Ref Vpc
 
   subnetDmzB:
     Type: AWS::EC2::Subnet
@@ -41,6 +42,7 @@ Resources:
       AvailabilityZone: !Select [1, !GetAZs ""]
       CidrBlock: !Select [1, !Cidr [!GetAtt Vpc.CidrBlock, 4, 8]]
       MapPublicIpOnLaunch: true
+      VpcId: !Ref Vpc
       Tags:
       - Key: Name
         Value: DMZ B
@@ -48,7 +50,6 @@ Resources:
         Value: public
       - Key: Purpose
         Value: load balancing
-      VpcId: !Ref Vpc
 
 
   # create two subnets to hold ec2 instances.

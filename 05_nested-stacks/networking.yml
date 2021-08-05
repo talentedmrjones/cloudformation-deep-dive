@@ -14,7 +14,7 @@ Resources:
   Network:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: !Sub https://${Bucket}.s3.amazonaws.com/cloudformation/networking/vpc-subnets.yml
+      TemplateURL: !Sub https://${Bucket}.s3.amazonaws.com/cloudformation/05_nested-stacks/vpc-subnets.yml
       Parameters:
         VpcSubnetCidrs: !Ref VpcSubnetCidrs
 
@@ -23,7 +23,7 @@ Resources:
   InternetAccess:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: !Sub https://${Bucket}.s3.amazonaws.com/cloudformation/networking/internet-access.yml
+      TemplateURL: !Sub https://${Bucket}.s3.amazonaws.com/cloudformation/05_nested-stacks/internet-access.yml
       Parameters:
         VpcId: !GetAtt Network.Outputs.VpcId
         SubnetDmzAId: !GetAtt Network.Outputs.SubnetDmzAId

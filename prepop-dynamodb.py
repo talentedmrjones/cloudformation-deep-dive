@@ -44,7 +44,7 @@ def lambda_handler(event, context):
 
     customResponse = {
        "Status" : "SUCCESS",
-       "PhysicalResourceId" : "None",
+       "PhysicalResourceId" : "000",
        "StackId" : event['StackId'],
        "RequestId" : event['RequestId'],
        "LogicalResourceId" : event['LogicalResourceId']

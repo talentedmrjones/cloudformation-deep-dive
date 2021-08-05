@@ -19,7 +19,7 @@ Resources:
     DependsOn: DynamoDbTable
     Properties:
       # an Amazon SNS topic ARN or Lambda function ARN
-      ServiceToken: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:prepo-dynamodb
+      ServiceToken: !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:prepop-dynamodb
       # arbitary key:values here
       TableARN: !GetAtt DynamoDbTable.Arn
     

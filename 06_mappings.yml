@@ -32,13 +32,13 @@ Mappings:
 
 
 Resources:
-  EC2InstanceRunningAmazonLinux:
+  X86AmazonLinux:
     Type: "AWS::EC2::Instance"
     Properties:
       ImageId: !FindInMap [AmazonLinux, !Ref AWS::Region, "x86"]
       InstanceType: !FindInMap [InstanceTypeByEnvironment, "type", !Ref Environment]
 
-  EC2InstanceRunningUbuntuXenial:
+  ArmUbuntuXenial:
     Type: "AWS::EC2::Instance"
     Properties:
       ImageId: !FindInMap [UbuntuXenial, !Ref AWS::Region, "arm"]

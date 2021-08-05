@@ -1,0 +1,11 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "EC2 Instance with User Data"
+
+Resources:
+  Instance:
+    Type: AWS::EC2::Instance
+    Properties: 
+      InstanceType: "m5.large"
+      UserData: !Base64 |
+        #!/bin/bash
+        aws s3 cp s3://mybucket/operations/myuserdata.sh - | /bin/bash

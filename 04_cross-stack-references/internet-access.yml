@@ -1,4 +1,3 @@
----
 AWSTemplateFormatVersion: "2010-09-09"
 Description: "Internet Gateway and Route Table for public traffic"
 

@@ -16,7 +16,8 @@ Resources:
   Vpc: #logical id
     Type: AWS::EC2::VPC
     Properties:
-      CidrBlock: !Ref VpcCidr
+      CidrBlock: 
+        Ref: VpcCidr
 
   subnetA:
     Type: AWS::EC2::Subnet
@@ -35,7 +36,7 @@ Resources:
   subnetB:
     Type: AWS::EC2::Subnet
     Properties:
-      AvailabilityZone: !Select [1, !GetAZs "" ]
+      AvailabilityZone: !Select [1, !GetAZs "" ] #b
       CidrBlock: !Select [1, !Ref SubnetCidrs]
       MapPublicIpOnLaunch: true
       VpcId: !Ref Vpc # short form reference
